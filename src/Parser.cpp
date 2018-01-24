@@ -45,16 +45,14 @@ namespace StealthNLP {
             actingConsonantFound = isActingConsonantPair(previousLetter, currentLetter);
             vowelFound = isVowel(currentLetter) && !actingConsonantFound;
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
-            if (actingConsonantFound) {
-                syllableCount += addSyllable(syllables, syllableBegin, letter);
-                // Change the acting consonant to a vowel now.
-                vowelFound = true;
-            } else if (prevVowelFound && !vowelFound) {
+            if (prevVowelFound && !vowelFound) {
                 if (syllableCount != 0 && shouldSplitCharacters(*syllableBegin, *(syllableBegin + 1))) {
                     // Strong consonants and double consonants should be split
                     syllables.back() += *syllableBegin++;
                 }
                 syllableCount += addSyllable(syllables, syllableBegin, letter);
+                // Change the acting consonant to a vowel now.
+                vowelFound = actingConsonantFound;
             }
         }
         // Handle last letter
