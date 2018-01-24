@@ -19,6 +19,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Labrador", {"Lab", "ra", "dor"}},
     {"Hybrid", {"Hy", "brid"}},
     {"Leo", {"Leo"}},
+    {"Syllable", {"Syl", "la", "ble"}},
 };
 
 int testSyllableParser() {
@@ -36,16 +37,6 @@ int testSyllableParser() {
 }
 
 int main() {
-    std::vector<std::string> syllables;
-    // std::string testWord = "Gattaca Attic Furniture Stuff Heimola";
-    // std::string testWord = "Azkaban";
-    // std::string testWord = "Stuff";
-    // std::string testWord = "Furniture";
-    // std::string testWord = "Labrador";
-    // std::string testWord = "Syllable";
-    // std::string testWord = "Meteorite";
-    // std::cout << "Syllable Count: " << StealthNLP::parseSyllables(testWord, syllables) << '\n';
-    // displaySyllables(syllables);
     int correctlyParsed = testSyllableParser();
     std::cout << "Correctly parsed " << correctlyParsed << " of " << SYLLABLE_TESTS.size() << " words."<< '\n';
 }
