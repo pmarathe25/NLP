@@ -51,7 +51,7 @@ namespace StealthNLP {
                     syllables.back() += *syllableBegin++;
                 }
                 syllableCount += addSyllable(syllables, syllableBegin, letter);
-                // Change the acting consonant to a vowel now.
+                // Change acting consonants to vowels now.
                 vowelFound = actingConsonantFound;
             }
         }
