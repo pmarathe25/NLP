@@ -55,14 +55,11 @@ namespace StealthNLP {
                 vowelFound = actingConsonantFound;
             }
         }
-        // Handle last letter
-        if (isConsonant(word.back()) || endsOnSilentE(word)) {
-            // If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
-            syllables.back() += std::string(syllableBegin, word.cend());
-        } else {
-            // Otherwise add the syllable remaining in the buffer
-            syllableCount += addSyllable(syllables, syllableBegin, word.cend());
-        }
+        // If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
+        if (isConsonant(word.back()) || endsOnSilentE(word)) syllables.back() += std::string(syllableBegin, word.cend());
+        // Otherwise add the syllable remaining in the buffer
+        else syllableCount += addSyllable(syllables, syllableBegin, word.cend());
+        // Done!
         return syllableCount;
     }
 

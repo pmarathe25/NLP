@@ -25,6 +25,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Easily", {"Ea", "si", "ly"}},
     {"Station", {"Sta", "tion"}},
     {"Communication", {"Com", "mu", "ni", "ca", "tion"}},
+    {"Triad", {"Tri", "ad"}},
     {"Negotiation", {"Ne", "go", "ti", "a", "tion"}},
 };
 
