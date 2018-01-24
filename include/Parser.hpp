@@ -4,7 +4,7 @@
 #include <string>
 
 namespace StealthNLP {
-    std::vector<std::string>& parseSyllables(const std::string& word, std::vector<std::string>& syllables) noexcept; 
+    int parseSyllables(const std::string& word, std::vector<std::string>& syllables) noexcept; 
 } /* StealthNLP */
 
 #endif /* end of include guard: STEALTHNLP_PARSER_H */
