@@ -6,8 +6,14 @@
 namespace StealthNLP {
     const std::unordered_set<unsigned char> VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'};
 
-    // Consonants that cannot be separated from the consonant before them
-    const std::unordered_set<unsigned char> WEAK_SUCCEEDING_CONSONANTS = {'l', 'r'};
+    // Consonants that cannot be separated from the consonant before them. Includes exceptions to the rule
+    const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> WEAK_SUCCEEDING_CONSONANTS = {
+        {'l', {'d'}},
+        {'r', {}},
+    };
+
+    // Letters that remove silent E's immediately preceeding them
+    const std::unordered_set<unsigned char> SILENT_E_REMOVERS = {'d', 'r'};
 
     // A vowel that acts like a consonant when preceding by any of the following vowels
     const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> ACTING_CONSONANT_PAIR = {
@@ -30,9 +36,15 @@ namespace StealthNLP {
         return ACTING_CONSONANT_PAIR.count(second) && ACTING_CONSONANT_PAIR.at(second).count(first);
     }
 
-    inline bool isWeakSucceedingConsonant(unsigned char c) noexcept {
+    inline bool isWeakSucceedingConsonantPair(unsigned char first, unsigned char second) noexcept {
+        first = std::tolower(first);
+        second = std::tolower(second);
+        return WEAK_SUCCEEDING_CONSONANTS.count(second) && !WEAK_SUCCEEDING_CONSONANTS.at(second).count(first);
+    }
+
+    inline bool isSilentERemover(unsigned char c) noexcept {
         c = std::tolower(c);
-        return WEAK_SUCCEEDING_CONSONANTS.count(c);
+        return SILENT_E_REMOVERS.count(c);
     }
 
     inline bool isDoubleLetter(unsigned char first, unsigned char second) noexcept {
@@ -54,8 +66,8 @@ namespace StealthNLP {
             && std::tolower(*letter) == 'e'
             // 3. Must have a vowel 2 letters before it. e.g. "ite", "ate", "ote" etc.
             && isVowel(*(letter - 2))
-            // 4. Must be followed either by nothing, or a consonant.
-            && (letter >= end || isConsonant(*(letter + 1)))
+            // 4. Must be followed either by nothing, or something that does not remove silent E's.
+            && (letter >= end || !isSilentERemover(*(letter + 1)))
             // 5. If the vowel preceeding it is an e, it must NOT be silent
             && !isSilentE(letter - 2, begin, end);
     }

@@ -32,7 +32,7 @@ namespace StealthNLP {
         inline bool shouldSplitCharacters(unsigned char first, unsigned char second) noexcept {
             // Either it is a strong succeeding consonant or a double letter
             return isDoubleConsonant(first, second)
-                && (!isWeakSucceedingConsonant(second) || isDoubleLetter(first, second));
+                && (!isWeakSucceedingConsonantPair(first, second) || isDoubleLetter(first, second));
         }
     }
 
@@ -44,7 +44,7 @@ namespace StealthNLP {
         // Maintain endpoints for syllables
         std::string::const_iterator syllableBegin = word.cbegin();
         // GO!
-        for (std::string::const_iterator letter = word.cbegin(); letter < word.cend(); ++letter) {
+        for (std::string::const_iterator letter = word.cbegin(); letter <= word.cend(); ++letter) {
             // Grab lettersLeo
             previousLetter = currentLetter;
             currentLetter = *letter;
@@ -65,7 +65,7 @@ namespace StealthNLP {
                 vowelFound = actingConsonantFound;
             }
         }
-        // If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
+        // Handle last letter. If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
         if (isConsonant(word.back()) || isSilentE(word.cend() - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, word.cend());
         // Otherwise add the syllable remaining in the buffer
         else syllableCount += addSyllable(syllables, syllableBegin, word.cend());
