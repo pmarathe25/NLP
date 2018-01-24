@@ -1,8 +1,6 @@
 #include "Parser.hpp"
 #include "EnglishConstants.hpp"
 
-#include <iostream>
-
 namespace StealthNLP {
     namespace {
         inline bool addSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
