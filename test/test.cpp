@@ -30,6 +30,9 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Warhammer", {"War", "ham", "mer"}},
     {"Virtuoso", {"Vir", "tu", "o", "so"}},
     {"Mesopotamia", {"Me", "so", "po", "ta", "mi", "a"}},
+    {"Airdrome", {"Air", "drome"}},
+    {"Management", {"Ma", "nage", "ment"}},
+    {"Mannerisms", {"Man", "ner", "isms"}},
 };
 
 int testSyllableParser() {

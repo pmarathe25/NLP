@@ -13,6 +13,14 @@ namespace StealthNLP {
             return false;
         }
 
+        inline void appendToPreviousSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
+            const std::string::const_iterator& syllableEnd) noexcept {
+            if (syllableBegin < syllableEnd) {
+                syllables.back().append(syllableBegin, syllableEnd);
+                syllableBegin = syllableEnd;
+            }
+        }
+
         inline bool findConsonantExtent(std::string::const_iterator& letter, const std::string::const_iterator& wordEnd) {
             bool validExtent = false;
             while (isConsonant(*++letter) && letter < wordEnd) {
@@ -50,13 +58,15 @@ namespace StealthNLP {
                     // Strong consonants and double consonants should be split
                     syllables.back() += *syllableBegin++;
                 }
-                syllableCount += addSyllable(syllables, syllableBegin, letter);
+                // If the previous vowel was a silent E, merge into the previous syllable
+                if (isSilentE(letter - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, letter);
+                else syllableCount += addSyllable(syllables, syllableBegin, letter);
                 // Change acting consonants to vowels now.
                 vowelFound = actingConsonantFound;
             }
         }
         // If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
-        if (isConsonant(word.back()) || endsOnSilentE(word)) syllables.back() += std::string(syllableBegin, word.cend());
+        if (isConsonant(word.back()) || isSilentE(word.cend() - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, word.cend());
         // Otherwise add the syllable remaining in the buffer
         else syllableCount += addSyllable(syllables, syllableBegin, word.cend());
         // Done!
