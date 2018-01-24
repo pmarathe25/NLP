@@ -22,6 +22,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Syllable", {"Syl", "la", "ble"}},
     {"Hoplite", {"Hop", "lite"}},
     {"Applicable", {"Ap", "pli", "ca", "ble"}},
+    {"Easily", {"Ea", "si", "ly"}},
 };
 
 int testSyllableParser() {
