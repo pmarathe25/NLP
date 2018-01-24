@@ -27,6 +27,8 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Communication", {"Com", "mu", "ni", "ca", "tion"}},
     {"Triad", {"Tri", "ad"}},
     {"Negotiation", {"Ne", "go", "ti", "a", "tion"}},
+    {"Warhammer", {"War", "ham", "mer"}},
+    {"Virtuoso", {"Vir", "tu", "o", "so"}},
 };
 
 int testSyllableParser() {
@@ -37,7 +39,7 @@ int testSyllableParser() {
             ++numSuccessful;
             std::cout << "Correctly parsed " << sylPair.first << " into: " << syllables << '\n';
         } else {
-            std::cout << "Incorrectly parsed " << sylPair.first << " into: " << syllables << " instead of: " << sylPair.second << '\n';
+            std::cout << "*\tIncorrectly parsed " << sylPair.first << " into: " << syllables << " instead of: " << sylPair.second << '\n';
         }
     }
     return numSuccessful;
