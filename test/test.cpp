@@ -18,6 +18,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Furniture", {"Fur", "ni", "ture"}},
     {"Labrador", {"Lab", "ra", "dor"}},
     {"Hybrid", {"Hy", "brid"}},
+    {"Leo", {"Leo"}},
 };
 
 int testSyllableParser() {

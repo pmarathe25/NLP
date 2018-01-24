@@ -1,18 +1,29 @@
 #include "Parser.hpp"
 #include "EnglishConstants.hpp"
 
-#include <iostream>
-
 namespace StealthNLP {
     namespace {
         inline void addSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
             const std::string::const_iterator& syllableEnd, int& syllableCount) noexcept {
-            syllables.emplace_back(syllableBegin, syllableEnd);
-            ++syllableCount;
-            syllableBegin = syllableEnd;
-            // DEBUG
-            // std::cout << "Added syllable: " << syllables.back() << '\n';
-            // END DEBUG
+            if (syllableBegin < syllableEnd) {
+                syllables.emplace_back(syllableBegin, syllableEnd);
+                ++syllableCount;
+                syllableBegin = syllableEnd;
+            }
+        }
+
+        inline bool findNextVowel(std::string::const_iterator& letter, const std::string::const_iterator& wordEnd) {
+            bool vowelFound = false;
+            while (!vowelFound && letter < wordEnd) {
+                vowelFound = isVowel(*++letter);
+            }
+            return vowelFound;
+        }
+
+        inline bool shouldSplitCharacters(char first, char second) noexcept {
+            // Either it is a strong succeeding consonant or a double letter
+            return isDoubleConsonant(first, second)
+                && (!isWeakSucceedingConsonant(second) || isDoubleLetter(first, second));
         }
     }
 
@@ -24,44 +35,32 @@ namespace StealthNLP {
         // Maintain endpoints for syllables
         std::string::const_iterator syllableBegin = word.cbegin();
         // GO!
-        for (std::string::const_iterator letter = word.cbegin(); letter != word.cend(); ++letter) {
+        for (std::string::const_iterator letter = word.cbegin(); letter < word.cend(); ++letter) {
+            // Grab letters
             previousLetter = currentLetter;
-            currentLetter = std::tolower(*letter);
+            currentLetter = *letter;
             // Remember whether the previous letter was a vowel and check if this letter is a vowel.
             prevVowelFound = vowelFound;
-            // Check if this vowel is going to act like a consonant.
-            actingConsonantFound = VOWEL_PAIRS.count(currentLetter) && VOWEL_PAIRS.at(currentLetter).count(previousLetter);
-            vowelFound = VOWELS.count(currentLetter) && !actingConsonantFound;
-
-            // DEBUG
-            // if (actingConsonantFound) std::cout << "Acting consonant found at: " << currentLetter << '\n';
-            // else if (vowelFound) std::cout << "Vowel found at: " << currentLetter << '\n';
-            // else std::cout << "Consonant found at: " << currentLetter << '\n';
-            // END DEBUG
-
+            actingConsonantFound = isActingConsonantPair(previousLetter, currentLetter);
+            vowelFound = isVowel(currentLetter) && !actingConsonantFound;
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
             if (actingConsonantFound) {
                 addSyllable(syllables, syllableBegin, letter, syllableCount);
                 // Scan until the next vowel
-                prevVowelFound = true;
-                while (!vowelFound) {
-                    vowelFound = VOWELS.count(*++letter);
+                if (findNextVowel(letter, word.cend())) {
+                    vowelFound = true;
+                    addSyllable(syllables, syllableBegin, letter, syllableCount);
                 }
-                addSyllable(syllables, syllableBegin, letter, syllableCount);
-            } else if (prevVowelFound && !vowelFound ) {
-                if (!VOWELS.count(*syllableBegin) && !VOWELS.count(*(syllableBegin + 1)) && syllableCount != 0
-                    && (!WEAK_SUCCEEDING_CONSONANTS.count(*(syllableBegin + 1)) || *syllableBegin == *(syllableBegin + 1))) {
-                    // Strong consonants and double consonants will always be split
+            } else if (prevVowelFound && !vowelFound) {
+                if (syllableCount != 0 && shouldSplitCharacters(*syllableBegin, *(syllableBegin + 1))) {
+                    // Strong consonants and double consonants should be split
                     syllables.back() += *syllableBegin++;
-                    // DEBUG
-                    // std::cout << "Found double consonant: " << *syllableBegin << *(syllableBegin + 1) << '\n';
-                    // END DEBUG
                 }
                 addSyllable(syllables, syllableBegin, letter, syllableCount);
             }
         }
         // Handle last letter
-        if (!VOWELS.count(word.back()) || (VOWELS.count(word[word.size() - 3]) && word.back() == 'e')) {
+        if (actingConsonantFound || isConsonant(word.back()) || endsOnSilentE(word)) {
             // If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
             syllables.back() += std::string(syllableBegin, word.cend());
         } else {
