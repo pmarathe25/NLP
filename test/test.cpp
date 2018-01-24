@@ -29,6 +29,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Negotiation", {"Ne", "go", "ti", "a", "tion"}},
     {"Warhammer", {"War", "ham", "mer"}},
     {"Virtuoso", {"Vir", "tu", "o", "so"}},
+    {"Mesopotamia", {"Me", "so", "po", "ta", "mi", "a"}},
 };
 
 int testSyllableParser() {

@@ -11,7 +11,7 @@ namespace StealthNLP {
 
     // A vowel that acts like a consonant when preceding by any of the following vowels
     const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> ACTING_CONSONANT_PAIR = {
-        {'o', {'a', 'e', 'i', 'u'}},
+        {'o', {'a', 'e', 'u'}},
         {'a', {'i'}},
     };
 
