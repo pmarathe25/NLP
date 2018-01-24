@@ -4,43 +4,44 @@
 #include <unordered_map>
 
 namespace StealthNLP {
-    const std::unordered_set<char> VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'};
+    const std::unordered_set<unsigned char> VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'};
 
     // Consonants that cannot be separated from the consonant before them
-    const std::unordered_set<char> WEAK_SUCCEEDING_CONSONANTS = {'l', 'r'};
+    const std::unordered_set<unsigned char> WEAK_SUCCEEDING_CONSONANTS = {'l', 'r'};
 
     // A vowel that acts like a consonant when preceding by any of the following vowels
-    const std::unordered_map<char, std::unordered_set<char>> ACTING_CONSONANT_PAIR = {
+    const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> ACTING_CONSONANT_PAIR = {
         {'o', {'e'}},
+        {'a', {'i'}},
     };
 
-    inline bool isVowel(char c) noexcept {
+    inline bool isVowel(unsigned char c) noexcept {
         c = std::tolower(c);
         return VOWELS.count(c);
     }
 
-    inline bool isConsonant(char c) noexcept {
+    inline bool isConsonant(unsigned char c) noexcept {
         return !isVowel(c);
     }
 
-    inline bool isActingConsonantPair(char first, char second) noexcept {
+    inline bool isActingConsonantPair(unsigned char first, unsigned char second) noexcept {
         first = std::tolower(first);
         second = std::tolower(second);
         return ACTING_CONSONANT_PAIR.count(second) && ACTING_CONSONANT_PAIR.at(second).count(first);
     }
 
-    inline bool isWeakSucceedingConsonant(char c) noexcept {
+    inline bool isWeakSucceedingConsonant(unsigned char c) noexcept {
         c = std::tolower(c);
         return WEAK_SUCCEEDING_CONSONANTS.count(c);
     }
 
-    inline bool isDoubleLetter(char first, char second) noexcept {
+    inline bool isDoubleLetter(unsigned char first, unsigned char second) noexcept {
         first = std::tolower(first);
         second = std::tolower(second);
         return first == second;
     }
 
-    inline bool isDoubleConsonant(char first, char second) noexcept {
+    inline bool isDoubleConsonant(unsigned char first, unsigned char second) noexcept {
         return isConsonant(first) && isConsonant(second);
     }
 

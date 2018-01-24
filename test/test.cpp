@@ -18,11 +18,14 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Furniture", {"Fur", "ni", "ture"}},
     {"Labrador", {"Lab", "ra", "dor"}},
     {"Hybrid", {"Hy", "brid"}},
-    {"Leo", {"Leo"}},
+    {"Leo", {"Le" , "o"}},
     {"Syllable", {"Syl", "la", "ble"}},
     {"Hoplite", {"Hop", "lite"}},
     {"Applicable", {"Ap", "pli", "ca", "ble"}},
     {"Easily", {"Ea", "si", "ly"}},
+    {"Station", {"Sta", "tion"}},
+    {"Communication", {"Com", "mu", "ni", "ca", "tion"}},
+    {"Negotiation", {"Ne", "go", "ti", "a", "tion"}},
 };
 
 int testSyllableParser() {
