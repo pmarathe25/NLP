@@ -1,6 +1,8 @@
 #include "Parser.hpp"
 #include "EnglishConstants.hpp"
 
+#include <iostream>
+
 namespace StealthNLP {
     namespace {
         inline void addSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
@@ -12,12 +14,12 @@ namespace StealthNLP {
             }
         }
 
-        inline bool findNextVowel(std::string::const_iterator& letter, const std::string::const_iterator& wordEnd) {
-            bool vowelFound = false;
-            while (!vowelFound && letter < wordEnd) {
-                vowelFound = isVowel(*++letter);
+        inline bool findConsonantExtent(std::string::const_iterator& letter, const std::string::const_iterator& wordEnd) {
+            bool validExtent = false;
+            while (isConsonant(*++letter) && letter < wordEnd) {
+                validExtent = true;
             }
-            return vowelFound;
+            return validExtent;
         }
 
         inline bool shouldSplitCharacters(char first, char second) noexcept {
@@ -36,7 +38,7 @@ namespace StealthNLP {
         std::string::const_iterator syllableBegin = word.cbegin();
         // GO!
         for (std::string::const_iterator letter = word.cbegin(); letter < word.cend(); ++letter) {
-            // Grab letters
+            // Grab lettersLeo
             previousLetter = currentLetter;
             currentLetter = *letter;
             // Remember whether the previous letter was a vowel and check if this letter is a vowel.
@@ -47,10 +49,8 @@ namespace StealthNLP {
             if (actingConsonantFound) {
                 addSyllable(syllables, syllableBegin, letter, syllableCount);
                 // Scan until the next vowel
-                if (findNextVowel(letter, word.cend())) {
-                    vowelFound = true;
-                    addSyllable(syllables, syllableBegin, letter, syllableCount);
-                }
+                vowelFound = findConsonantExtent(letter, word.cend());
+                if (vowelFound)  addSyllable(syllables, syllableBegin, letter, syllableCount);
             } else if (prevVowelFound && !vowelFound) {
                 if (syllableCount != 0 && shouldSplitCharacters(*syllableBegin, *(syllableBegin + 1))) {
                     // Strong consonants and double consonants should be split
