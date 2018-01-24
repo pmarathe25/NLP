@@ -12,11 +12,12 @@ void displaySyllables(const std::vector<std::string> syllables) noexcept {
 int main() {
     std::vector<std::string> syllables{};
     // std::string testWord = "Gattaca Attic Furniture Stuff Heimola";
-    std::string testWord = "Stuff";
+    // std::string testWord = "Azkaban";
+    // std::string testWord = "Stuff";
     // std::string testWord = "Furniture";
     // std::string testWord = "Labrador";
     // std::string testWord = "Syllable";
-    // std::string testWord = "Meteorite";
+    std::string testWord = "Meteorite";
 
     std::cout << "Syllable Count: " << StealthNLP::parseSyllables(testWord, syllables) << '\n';
     displaySyllables(syllables);
