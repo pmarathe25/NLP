@@ -15,9 +15,9 @@ namespace StealthNLP {
             // Remember whether the previous letter was a vowel and check if this letter is a vowel.
             prevVowelFound = vowelFound;
             prevActingConsonantFound = actingConsonantFound;
-            // Make sure this vowel is not going to act like a consonant.
-            vowelFound = VOWELS.count(*letter);
+            // Check if this vowel is going to act like a consonant.
             actingConsonantFound = VOWEL_PAIRS.count(*letter) && VOWEL_PAIRS.at(*letter).count(*(letter - 1));
+            vowelFound = VOWELS.count(*letter) && !actingConsonantFound;
 
             // DEBUG
             // if (actingConsonantFound) std::cout << "Acting consonant found at: " << *letter << '\n';
@@ -28,18 +28,43 @@ namespace StealthNLP {
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
             if (actingConsonantFound) {
                 syllables.emplace_back(syllableBegin, letter);
-                std::cout << "Added syllable (due to acting consonant): " << syllables.back() << '\n';
+
+                // DEBUG
+                // std::cout << "Added syllable (due to acting consonant): " << syllables.back() << '\n';
+                // END DEBUG
+                
                 ++syllableCount;
                 syllableBegin = letter;
-            } else if (prevVowelFound && !vowelFound) {
+                // Scan until the next vowel
+                prevVowelFound = true;
+                while (!vowelFound) {
+                    vowelFound = VOWELS.count(*++letter);
+                }
+                syllables.emplace_back(syllableBegin, letter);
+
+                // DEBUG
+                // std::cout << "Added syllable (after acting consonant): " << syllables.back() << '\n';
+                // END DEBUG
+                
+                ++syllableCount;
+                syllableBegin = letter;
+            } else if (prevVowelFound && !vowelFound ) {
                 // Make sure double consonant is NOT due to an acting consonant
-                if (!VOWELS.count(*(syllableBegin + 1)) && syllableCount != 0 && !prevActingConsonantFound) {
-                    std::cout << "Found double consonant: " << *syllableBegin << *(syllableBegin + 1) << '\n';
+                if (!VOWELS.count(*syllableBegin) && !VOWELS.count(*(syllableBegin + 1)) && syllableCount != 0) {
+
+                    // DEBUG
+                    // std::cout << "Found double consonant: " << *syllableBegin << *(syllableBegin + 1) << '\n';
+                    // END DEBUG
+                    
                     // In case of a double consonant, append the first one to the previous syllable
                     syllables.back() += *syllableBegin++;
                 }
                 syllables.emplace_back(syllableBegin, letter);
-                std::cout << "Added syllable: " << syllables.back() << '\n';
+
+                // DEBUG
+                // std::cout << "Added syllable: " << syllables.back() << '\n';
+                // END DEBUG
+                
                 ++syllableCount;
                 // Start a new syllable
                 syllableBegin = letter;
