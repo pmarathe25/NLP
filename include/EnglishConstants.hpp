@@ -5,27 +5,27 @@
 #include <vector>
 
 namespace StealthNLP {
-    const std::unordered_set<unsigned char> VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'};
+    const std::unordered_set<unsigned char> VOWELS{'a', 'e', 'i', 'o', 'u', 'y'};
 
     // Consonants that cannot be separated from the consonant before them. Includes exceptions to the rule.
-    const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> WEAK_SUCCEEDING_CONSONANTS = {
+    const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> WEAK_SUCCEEDING_CONSONANTS{
         {'l', {'d', 'p'}},
         {'r', {}},
         {'h', {'r'}},
     };
 
     // Letters that remove silent E's immediately preceeding them
-    const std::unordered_set<unsigned char> SILENT_E_REMOVERS = {'d', 'r', 'n', 'a', 'e', 'i', 'o', 'u', 'y'};
+    const std::unordered_set<unsigned char> SILENT_E_REMOVERS{'d', 'r', 'n', 'a', 'e', 'i', 'o', 'u', 'y'};
 
     // A vowel that acts like a consonant when preceding by any of the following vowels
-    const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> ACTING_CONSONANT_PAIR = {
+    const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> ACTING_CONSONANT_PAIR{
         {'o', {'a', 'e', 'u', 'i'}},
         {'a', {'i'}},
         {'u', {'i'}},
     };
 
     // When an acting consonant is wrapped by one of these, it invalidates the acting consonant
-    const std::unordered_map<unsigned char, std::vector<std::pair<std::string, std::string>>> ACTING_CONSONANT_REMOVERS = {
+    const std::unordered_map<unsigned char, std::vector<std::pair<std::string, std::string>>> ACTING_CONSONANT_REMOVERS{
         {'o', {{"ti", "n"}}}
     };
 
