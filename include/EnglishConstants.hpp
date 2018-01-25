@@ -61,14 +61,14 @@ namespace StealthNLP {
     inline bool isSilentE(const std::string::const_iterator& letter, const std::string::const_iterator& begin,
          const std::string::const_iterator& end) noexcept {
         // Rules:
-        // 1. Must be in-bounds.
-        return (letter >= begin)
+            // 1. Must be in-bounds.
+        return (letter >= (begin + 2) && letter < end)
             // 2. Must be an 'e'
             && std::tolower(*letter) == 'e'
             // 3. Must have a vowel 2 letters before it. e.g. "ite", "ate", "ote" etc.
             && isVowel(*(letter - 2))
             // 4. Must be followed either by nothing, or something that does not remove silent E's.
-            && (letter >= end || !isSilentERemover(*(letter + 1)))
+            && (letter + 1 >= end || !isSilentERemover(*(letter + 1)))
             // 5. If the vowel preceeding it is an e, it must NOT be silent
             && !isSilentE(letter - 2, begin, end);
     }
