@@ -13,10 +13,10 @@ std::ostream& operator<<(std::ostream& out, const std::vector<std::string> sylla
 
 const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Azkaban", {"Az", "ka", "ban"}},
-    {"Meteorite", {"Me", "te", "or", "ite"}},
+    {"Meteorite", {"Me", "te", "o", "rite"}},
     {"Stuff", {"Stuff"}},
     {"Furniture", {"Fur", "ni", "ture"}},
-    {"Labrador", {"Lab", "ra", "dor"}},
+    {"Labrador", {"La", "bra", "dor"}},
     {"Hybrid", {"Hy", "brid"}},
     {"Leo", {"Le" , "o"}},
     {"Syllable", {"Syl", "la", "ble"}},
@@ -32,7 +32,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Mesopotamia", {"Me", "so", "po", "ta", "mi", "a"}},
     {"Airdrome", {"Air", "drome"}},
     {"Management", {"Ma", "nage", "ment"}},
-    {"Mannerisms", {"Man", "ner", "isms"}},
+    {"Mannerisms", {"Man", "ne", "risms"}},
     {"Miner", {"Mi", "ner"}},
     {"Hated", {"Ha", "ted"}},
     {"Belatedly", {"Be", "la", "ted", "ly"}},
