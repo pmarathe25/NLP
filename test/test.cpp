@@ -40,6 +40,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Commandment", {"Com", "mand", "ment"}},
     {"Crematorium", {"Cre", "ma", "to", "ri", "um"}},
     {"Biodegradable", {"Bi", "o", "de", "gra", "da", "ble"}},
+    {"Actionable", {"Ac", "tio", "na", "ble"}},
 };
 
 int testSyllableParser() {

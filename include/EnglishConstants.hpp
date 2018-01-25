@@ -97,7 +97,7 @@ namespace StealthNLP {
             // 3. Must have a vowel 2 letters before it. e.g. "ite", "ate", "ote" etc.
             && isVowel(*(letter - 2))
             // 4. That vowel must NOT be an acting consonant pair
-            && (letter - 3 >= begin && !isActingConsonantPair(letter - 2, begin, end))
+            && !isActingConsonantPair(letter - 2, begin, end)
             // 5. Must be followed either by nothing, or something that does not remove silent E's.
             && (letter + 1 >= end || !isSilentERemover(*(letter + 1)))
             // 6. If the vowel preceeding it is an e, it must NOT be silent
