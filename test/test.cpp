@@ -38,6 +38,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Belatedly", {"Be", "la", "ted", "ly"}},
     {"Parka", {"Par", "ka"}},
     {"Commandment", {"Com", "mand", "ment"}},
+    {"Crematorium", {"Cre", "ma", "to", "ri", "um"}},
 };
 
 int testSyllableParser() {
