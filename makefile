@@ -5,6 +5,7 @@ SRCDIR = src/
 # Objects
 OBJS = $(addprefix $(BUILDDIR)/, Parser.o)
 TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
+LIB = lib/libstealthnlp.so
 # Headers
 INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
@@ -13,11 +14,14 @@ HEADERS = $(addprefix $(INCLUDEPATH)/, EnglishConstants.hpp Parser.hpp)
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -Wpedantic -march=native
 LFLAGS = -shared -flto -O3 -march=native
-TESTLFLAGS = -flto -O3 -march=native
+TESTLFLAGS = -flto -O3 -march=native -lstealthnlp
 EXECLFLAGS = -flto -O3 -march=native
 
+$(LIB): $(OBJS)
+	$(CXX) $(LFLAGS) $(OBJS) -o $(LIB)
+
 $(TESTDIR)/test: $(TESTOBJS) $(HEADERS) $(OBJS)
-	$(CXX) $(TESTOBJS) $(OBJS) $(TESTLFLAGS) -o $(TESTDIR)/test
+	$(CXX) $(TESTOBJS) $(TESTLFLAGS) -o $(TESTDIR)/test
 
 $(BUILDDIR)/test.o: $(TESTDIR)/test.cpp $(HEADERS)
 	$(CXX) $(CFLAGS) $(TESTDIR)/test.cpp -o $(BUILDDIR)/test.o
@@ -30,3 +34,5 @@ clean:
 
 test: $(TESTDIR)/test
 	$(TESTDIR)/test
+
+lib: $(LIB)
