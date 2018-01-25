@@ -68,11 +68,15 @@ namespace StealthNLP {
         if (potentialActingConsonant && ACTING_CONSONANT_REMOVERS.count(second)) {
             // Check for exceptions. Cache prefix and suffix.
             std::string prefix, suffix;
+            std::string::const_iterator startPoint, endPoint;
             for (const auto& exceptionPair : ACTING_CONSONANT_REMOVERS.at(second)) {
                 // Is this exception case possible?
                 prefix = exceptionPair.first;
                 suffix = exceptionPair.second;
-                auto startPoint = letter - prefix.size(), endPoint = letter + suffix.size() + 1;
+                // Cache end points
+                startPoint = letter - prefix.size();
+                endPoint = letter + suffix.size() + 1;
+                // Check for matches
                 if (startPoint >= begin && endPoint <= end
                     && (prefix == std::string(startPoint, letter))
                     && (suffix == std::string(letter + 1, endPoint)))
