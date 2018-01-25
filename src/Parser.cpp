@@ -45,9 +45,9 @@ namespace StealthNLP {
         }
 
         inline void removeDuplicateConsonants(std::vector<std::string>& syllables, std::string::const_iterator& begin,
-            const std::string::const_iterator& end, int syllableCount) {
-            while (syllableCount != 0 && begin + 1 < end && shouldSplitCharacters(*begin, *(begin + 1))) {
-                // Strong consonants and double consonants should be split
+            const std::string::const_iterator& end) {
+            // Strong consonants and double consonants should be split as long as they are within bounds
+            while (begin + 1 < end && shouldSplitCharacters(*begin, *(begin + 1))) {
                 syllables.back() += *begin++;
             }
         }
@@ -72,8 +72,8 @@ namespace StealthNLP {
             vowelFound = isVowel(currentLetter) && !actingConsonantFound;
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
             if (prevVowelFound && !vowelFound) {
-                // Remove duplicate consonants from this syllable.
-                removeDuplicateConsonants(syllables, syllableBegin, word.cend(), syllableCount);
+                // Remove duplicate consonants from this syllable if this is not the first syllable.
+                if (syllableCount > 0) removeDuplicateConsonants(syllables, syllableBegin, word.cend());
                 // If the previous vowel was a silent E, merge into the previous syllable
                 if (isSilentE(letter - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, letter);
                 else syllableCount += addSyllable(syllables, syllableBegin, letter);
