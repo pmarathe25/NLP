@@ -68,7 +68,7 @@ namespace StealthNLP {
             prevVowelFound = vowelFound;
             vowelFound = isVowel(currentLetter);
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
-            if (prevVowelFound && (!vowelFound || isActingConsonantPair(previousLetter, currentLetter))) {
+            if (prevVowelFound && (!vowelFound || isActingConsonantPair(letter, word.cbegin(), word.cend()))) {
                 addSyllable(syllables, syllableBegin, letter, word.cbegin(), word.cend(), syllableCount);
             }
         }

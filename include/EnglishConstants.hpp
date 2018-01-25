@@ -2,6 +2,7 @@
 #define STEALTHNLP_ENGLISH_CONSTANTS_H
 #include <unordered_set>
 #include <unordered_map>
+#include <vector>
 
 namespace StealthNLP {
     const std::unordered_set<unsigned char> VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'};
@@ -18,9 +19,14 @@ namespace StealthNLP {
 
     // A vowel that acts like a consonant when preceding by any of the following vowels
     const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> ACTING_CONSONANT_PAIR = {
-        {'o', {'a', 'e', 'u'}},
+        {'o', {'a', 'e', 'u', 'i'}},
         {'a', {'i'}},
         {'u', {'i'}},
+    };
+
+    // When an acting consonant is wrapped by one of these, it invalidates the acting consonant
+    const std::unordered_map<unsigned char, std::vector<std::pair<std::string, std::string>>> ACTING_CONSONANT_REMOVERS = {
+        {'o', {{"ti", "n"}}}
     };
 
     inline bool isVowel(unsigned char c) noexcept {
@@ -30,12 +36,6 @@ namespace StealthNLP {
 
     inline bool isConsonant(unsigned char c) noexcept {
         return !isVowel(c);
-    }
-
-    inline bool isActingConsonantPair(unsigned char first, unsigned char second) noexcept {
-        first = std::tolower(first);
-        second = std::tolower(second);
-        return ACTING_CONSONANT_PAIR.count(second) && ACTING_CONSONANT_PAIR.at(second).count(first);
     }
 
     inline bool isWeakSucceedingConsonantPair(unsigned char first, unsigned char second) noexcept {
@@ -59,6 +59,29 @@ namespace StealthNLP {
         return isConsonant(first) && isConsonant(second);
     }
 
+    inline bool isActingConsonantPair(const std::string::const_iterator& letter,
+        const std::string::const_iterator& begin, const std::string::const_iterator& end) noexcept {
+        char first = (letter - 1 >= begin) ? std::tolower(*(letter - 1)) : '\0';
+        char second = std::tolower(*letter);
+        bool potentialActingConsonant = ACTING_CONSONANT_PAIR.count(second) && ACTING_CONSONANT_PAIR.at(second).count(first);
+        // If there is potentially an acting consonant.
+        if (potentialActingConsonant && ACTING_CONSONANT_REMOVERS.count(second)) {
+            // Check for exceptions. Cache prefix and suffix.
+            std::string prefix, suffix;
+            for (const auto& exceptionPair : ACTING_CONSONANT_REMOVERS.at(second)) {
+                // Is this exception case possible?
+                prefix = exceptionPair.first;
+                suffix = exceptionPair.second;
+                if (letter - prefix.size() >= begin && letter + suffix.size() <= end
+                    && (prefix == std::string(letter - prefix.size(), letter))
+                    && (suffix == std::string(letter + 1, letter + suffix.size() + 1)))
+                    // If there's a match, this cannot act as a consonant!
+                    return false;
+            }
+        }
+        return potentialActingConsonant;
+    }
+
     inline bool isSilentE(const std::string::const_iterator& letter, const std::string::const_iterator& begin,
          const std::string::const_iterator& end) noexcept {
         // Rules:
@@ -68,9 +91,11 @@ namespace StealthNLP {
             && std::tolower(*letter) == 'e'
             // 3. Must have a vowel 2 letters before it. e.g. "ite", "ate", "ote" etc.
             && isVowel(*(letter - 2))
-            // 4. Must be followed either by nothing, or something that does not remove silent E's.
+            // 4. That vowel must NOT be an acting consonant pair
+            && (letter - 3 >= begin && !isActingConsonantPair(letter - 2, begin, end))
+            // 5. Must be followed either by nothing, or something that does not remove silent E's.
             && (letter + 1 >= end || !isSilentERemover(*(letter + 1)))
-            // 5. If the vowel preceeding it is an e, it must NOT be silent
+            // 6. If the vowel preceeding it is an e, it must NOT be silent
             && !isSilentE(letter - 2, begin, end);
     }
 } /* StealthNLP */

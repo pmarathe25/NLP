@@ -39,6 +39,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Parka", {"Par", "ka"}},
     {"Commandment", {"Com", "mand", "ment"}},
     {"Crematorium", {"Cre", "ma", "to", "ri", "um"}},
+    {"Biodegradable", {"Bi", "o", "de", "gra", "da", "ble"}},
 };
 
 int testSyllableParser() {
@@ -58,11 +59,11 @@ int testSyllableParser() {
 int main() {
     int correctlyParsed = testSyllableParser();
     std::cout << "Correctly parsed " << correctlyParsed << " of " << SYLLABLE_TESTS.size() << " words."<< "\n\n";
-    std::string word;
-    while (true) {
-        std::cout << ">> ";
-        std::cin >> word;
-        if (word == "exit" || word == "quit") return 0;
-        std::cout << StealthNLP::parseSyllables(word) << '\n';
-    }
+    // std::string word;
+    // while (true) {
+    //     std::cout << ">> ";
+    //     std::cin >> word;
+    //     if (word == "exit" || word == "quit") return 0;
+    //     std::cout << StealthNLP::parseSyllables(word) << '\n';
+    // }
 }
