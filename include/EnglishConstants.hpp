@@ -10,6 +10,7 @@ namespace StealthNLP {
     const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> WEAK_SUCCEEDING_CONSONANTS = {
         {'l', {'d', 'p'}},
         {'r', {}},
+        {'h', {'r'}},
     };
 
     // Letters that remove silent E's immediately preceeding them

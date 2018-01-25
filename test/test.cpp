@@ -21,7 +21,7 @@ const std::map<std::string, std::vector<std::string>> SYLLABLE_TESTS = {
     {"Leo", {"Le" , "o"}},
     {"Syllable", {"Syl", "la", "ble"}},
     {"Hoplite", {"Hop", "lite"}},
-    {"Applicable", {"Ap", "pli", "ca", "ble"}},
+    {"Applicable", {"App", "li", "ca", "ble"}},
     {"Easily", {"Ea", "si", "ly"}},
     {"Station", {"Sta", "tion"}},
     {"Communication", {"Com", "mu", "ni", "ca", "tion"}},
@@ -54,5 +54,11 @@ int testSyllableParser() {
 
 int main() {
     int correctlyParsed = testSyllableParser();
-    std::cout << "Correctly parsed " << correctlyParsed << " of " << SYLLABLE_TESTS.size() << " words."<< '\n';
+    std::cout << "Correctly parsed " << correctlyParsed << " of " << SYLLABLE_TESTS.size() << " words."<< "\n\n";
+    std::string word;
+    while (true) {
+        std::cout << ">> ";
+        std::cin >> word;
+        std::cout << StealthNLP::parseSyllables(word) << '\n';
+    }
 }

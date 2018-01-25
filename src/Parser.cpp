@@ -3,6 +3,15 @@
 
 namespace StealthNLP {
     namespace {
+        inline bool addSyllable(std::vector<std::string>& syllables, const std::string::const_iterator& syllableBegin,
+            const std::string::const_iterator& syllableEnd) noexcept {
+            if (syllableBegin < syllableEnd) {
+                syllables.emplace_back(syllableBegin, syllableEnd);
+                return true;
+            }
+            return false;
+        }
+
         inline bool addSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
             const std::string::const_iterator& syllableEnd) noexcept {
             if (syllableBegin < syllableEnd) {
@@ -34,10 +43,19 @@ namespace StealthNLP {
             return isDoubleConsonant(first, second)
                 && (!isWeakSucceedingConsonantPair(first, second) || isDoubleLetter(first, second));
         }
+
+        inline void removeDuplicateConsonants(std::vector<std::string>& syllables, std::string::const_iterator& begin,
+            const std::string::const_iterator& end, int syllableCount) {
+            while (syllableCount != 0 && begin + 1 < end && shouldSplitCharacters(*begin, *(begin + 1))) {
+                // Strong consonants and double consonants should be split
+                syllables.back() += *begin++;
+            }
+        }
     }
 
     // Use supplied buffer
     int parseSyllables(const std::string& word, std::vector<std::string>& syllables) noexcept {
+        if (word.size() == 1) return addSyllable(syllables, word.cbegin(), word.cend());
         int syllableCount = 0;
         unsigned char currentLetter = '\0', previousLetter = '\0';
         bool vowelFound = false, actingConsonantFound = false, prevVowelFound = false;
@@ -54,10 +72,8 @@ namespace StealthNLP {
             vowelFound = isVowel(currentLetter) && !actingConsonantFound;
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
             if (prevVowelFound && !vowelFound) {
-                if (syllableCount != 0 && shouldSplitCharacters(*syllableBegin, *(syllableBegin + 1))) {
-                    // Strong consonants and double consonants should be split
-                    syllables.back() += *syllableBegin++;
-                }
+                // Remove duplicate consonants from this syllable.
+                removeDuplicateConsonants(syllables, syllableBegin, word.cend(), syllableCount);
                 // If the previous vowel was a silent E, merge into the previous syllable
                 if (isSilentE(letter - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, letter);
                 else syllableCount += addSyllable(syllables, syllableBegin, letter);
