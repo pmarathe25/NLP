@@ -3,25 +3,6 @@
 
 namespace StealthNLP {
     namespace {
-        inline bool addSyllable(std::vector<std::string>& syllables, const std::string::const_iterator& syllableBegin,
-            const std::string::const_iterator& syllableEnd) noexcept {
-            if (syllableBegin < syllableEnd) {
-                syllables.emplace_back(syllableBegin, syllableEnd);
-                return true;
-            }
-            return false;
-        }
-
-        inline bool addSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
-            const std::string::const_iterator& syllableEnd) noexcept {
-            if (syllableBegin < syllableEnd) {
-                syllables.emplace_back(syllableBegin, syllableEnd);
-                syllableBegin = syllableEnd;
-                return true;
-            }
-            return false;
-        }
-
         inline void appendToPreviousSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
             const std::string::const_iterator& syllableEnd) noexcept {
             if (syllableBegin < syllableEnd) {
@@ -51,40 +32,54 @@ namespace StealthNLP {
                 syllables.back() += *begin++;
             }
         }
+
+        inline void addSyllable(std::vector<std::string>& syllables, std::string::const_iterator& syllableBegin,
+            const std::string::const_iterator& syllableEnd, const std::string::const_iterator& wordBegin,
+            const std::string::const_iterator& wordEnd, int& syllableCount) noexcept {
+            // Remove duplicate consonants from this syllable if this is not the first syllable.
+            if (syllableCount > 0) removeDuplicateConsonants(syllables, syllableBegin, wordEnd);
+            // If the previous vowel was a silent E, merge into the previous syllable
+            if (isSilentE(syllableEnd - 1, wordBegin, wordEnd)) {
+                appendToPreviousSyllable(syllables, syllableBegin, syllableEnd);
+            } else if (syllableBegin < syllableEnd) {
+                // Otherwise add the syllable (if valid)
+                syllables.emplace_back(syllableBegin, syllableEnd);
+                syllableBegin = syllableEnd;
+                ++syllableCount;
+            }
+        }
     }
 
     // Use supplied buffer
     int parseSyllables(const std::string& word, std::vector<std::string>& syllables) noexcept {
-        if (word.size() == 1) return addSyllable(syllables, word.cbegin(), word.cend());
+        // How many syllables in this word?
         int syllableCount = 0;
+        // Always cache 2 letters at a time
         unsigned char currentLetter = '\0', previousLetter = '\0';
-        bool vowelFound = false, actingConsonantFound = false, prevVowelFound = false;
+        bool vowelFound = false, prevVowelFound = false;
         // Maintain endpoints for syllables
         std::string::const_iterator syllableBegin = word.cbegin();
         // GO!
-        for (std::string::const_iterator letter = word.cbegin(); letter <= word.cend(); ++letter) {
-            // Grab lettersLeo
+        for (std::string::const_iterator letter = word.cbegin(); letter < word.cend(); ++letter) {
+            // Grab letters
             previousLetter = currentLetter;
             currentLetter = *letter;
             // Remember whether the previous letter was a vowel and check if this letter is a vowel.
             prevVowelFound = vowelFound;
-            actingConsonantFound = isActingConsonantPair(previousLetter, currentLetter);
-            vowelFound = isVowel(currentLetter) && !actingConsonantFound;
+            vowelFound = isVowel(currentLetter);
             // If this letter is a consonant (or acting consonant) but the last letter was a vowel, end the syllable.
-            if (prevVowelFound && !vowelFound) {
-                // Remove duplicate consonants from this syllable if this is not the first syllable.
-                if (syllableCount > 0) removeDuplicateConsonants(syllables, syllableBegin, word.cend());
-                // If the previous vowel was a silent E, merge into the previous syllable
-                if (isSilentE(letter - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, letter);
-                else syllableCount += addSyllable(syllables, syllableBegin, letter);
-                // Change acting consonants to vowels now.
-                vowelFound = actingConsonantFound;
+            if (prevVowelFound && (!vowelFound || isActingConsonantPair(previousLetter, currentLetter))) {
+                addSyllable(syllables, syllableBegin, letter, word.cbegin(), word.cend(), syllableCount);
             }
         }
-        // Handle last letter. If we end on a consonant (or 'e' in special cases), add it to the previous syllable.
-        if (isConsonant(word.back()) || isSilentE(word.cend() - 1, word.cbegin(), word.cend())) appendToPreviousSyllable(syllables, syllableBegin, word.cend());
-        // Otherwise add the syllable remaining in the buffer
-        else syllableCount += addSyllable(syllables, syllableBegin, word.cend());
+        // Handle last letter. If we end on a consonant (or 'e' in special cases)...
+        if (isConsonant(word.back()) || isSilentE(word.cend() - 1, word.cbegin(), word.cend())) {
+            // ...add it to the previous syllable if there is one.
+            if (syllableCount != 0) appendToPreviousSyllable(syllables, syllableBegin, word.cend());
+        } else {
+            // Otherwise add the syllable remaining in the buffer
+            addSyllable(syllables, syllableBegin, word.cend(), word.cbegin(), word.cend(), syllableCount);
+        }
         // Done!
         return syllableCount;
     }
