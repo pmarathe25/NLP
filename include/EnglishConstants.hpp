@@ -7,7 +7,7 @@
 namespace StealthNLP {
     const std::unordered_set<unsigned char> VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'};
 
-    // Consonants that cannot be separated from the consonant before them. Includes exceptions to the rule
+    // Consonants that cannot be separated from the consonant before them. Includes exceptions to the rule.
     const std::unordered_map<unsigned char, std::unordered_set<unsigned char>> WEAK_SUCCEEDING_CONSONANTS = {
         {'l', {'d', 'p'}},
         {'r', {}},
@@ -64,9 +64,9 @@ namespace StealthNLP {
         char first = (letter - 1 >= begin) ? std::tolower(*(letter - 1)) : '\0';
         char second = std::tolower(*letter);
         bool potentialActingConsonant = ACTING_CONSONANT_PAIR.count(second) && ACTING_CONSONANT_PAIR.at(second).count(first);
-        // If there is potentially an acting consonant.
+        // If there is potentially an acting consonant...
         if (potentialActingConsonant && ACTING_CONSONANT_REMOVERS.count(second)) {
-            // Check for exceptions. Cache prefix and suffix.
+            // ...check for exceptions. Cache prefix and suffix.
             std::string prefix, suffix;
             std::string::const_iterator startPoint, endPoint;
             for (const auto& exceptionPair : ACTING_CONSONANT_REMOVERS.at(second)) {
