@@ -72,9 +72,10 @@ namespace StealthNLP {
                 // Is this exception case possible?
                 prefix = exceptionPair.first;
                 suffix = exceptionPair.second;
-                if (letter - prefix.size() >= begin && letter + suffix.size() <= end
-                    && (prefix == std::string(letter - prefix.size(), letter))
-                    && (suffix == std::string(letter + 1, letter + suffix.size() + 1)))
+                auto startPoint = letter - prefix.size(), endPoint = letter + suffix.size() + 1;
+                if (startPoint >= begin && endPoint <= end
+                    && (prefix == std::string(startPoint, letter))
+                    && (suffix == std::string(letter + 1, endPoint)))
                     // If there's a match, this cannot act as a consonant!
                     return false;
             }
