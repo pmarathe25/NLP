@@ -1,15 +1,16 @@
-BUILDDIR = build/
-BINDIR = ~/bin/
-TESTDIR = test/
-SRCDIR = src/
+include ../makefile.defines
+BUILDDIR = build
+BINDIR = ~/bin
+TESTDIR = test
+SRCDIR = src
 # Objects
-OBJS = $(addprefix $(BUILDDIR)/, Parser.o)
-TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
+OBJS = $(call generate_obj_names,$(SRCDIR),$(BUILDDIR))
+TESTOBJS = $(call generate_obj_names,$(TESTDIR),$(BUILDDIR))
 LIB = lib/libstealthnlp.so
 # Headers
 INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
-HEADERS = $(addprefix $(INCLUDEPATH)/, EnglishConstants.hpp Parser.hpp)
+HEADERS = $(call find_headers,$(INCLUDEPATH))
 # Compiler settings
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -Wpedantic -march=native
